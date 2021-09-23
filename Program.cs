@@ -53,35 +53,50 @@ namespace CalendarQuickstart
             //}
 
             // Define parameters of request.
-                // Get all of my calendars
-            CalendarListResource.ListRequest myCalsRequest = service.CalendarList.List();
-            myCalsRequest.PrettyPrint = false;
-            var cals = myCalsRequest.Execute();
-            foreach(var cal in cals.Items)
-            {
-                Console.WriteLine("Id: {0}", cal.Id);
-                Console.WriteLine("Summary: {0}", cal.Summary);
-                Console.WriteLine("Description: {0}", cal.Description);
+            // Get all of my calendars
+            //CalendarListResource.ListRequest myCalsRequest = service.CalendarList.List();
+            //var cals = myCalsRequest.Execute();
+            //foreach()
+            //Console.WriteLine("Id: {0}", cal.Id);
+            //Console.WriteLine("Summary: {0}", cal.Summary);
+            //Console.WriteLine("Description: {0}", cal.Description);
+            List<calItem> familyEvents = new List<calItem>();
 
-                EventsResource.ListRequest request = service.Events.List(cal.Id);
+            List<string> cals = new List<string>()
+            {
+                "3ebumnacuflq2qoljg18rbavn8@group.calendar.google.com",
+                "en.usa#holiday@group.v.calendar.google.com",
+                "lloydturley2@gmail.com",
+                "family14932423850734630239@group.calendar.google.com",
+                "vkroqg925v3afevfe5t62aq3i8@group.calendar.google.com",
+                "en.christian#holiday@group.v.calendar.google.com",
+                "f2qeksj4vjbvvscqilpe0a5hn4e3h9ij@import.calendar.google.com",
+                "waldentennessee@gmail.com",
+                "s93rp3t2qo3k16kot7bd4nqs2s@group.calendar.google.com"
+            };
+
+            foreach(var cal in cals)
+            {
+                EventsResource.ListRequest request = service.Events.List(cal);
                 request.TimeMin = DateTime.Now;
+                request.TimeMax = DateTime.Now.AddDays(7);
                 request.ShowDeleted = false;
                 request.SingleEvents = true;
-                request.MaxResults = 10;
+                //request.MaxResults = 10;
                 request.OrderBy = EventsResource.ListRequest.OrderByEnum.StartTime;
 
                 // List events.
                 Events events = request.Execute();
-            
+                //Console.WriteLine("Summary: {0}", events.Summary);
+
                 if (events.Items != null && events.Items.Count > 0)
                 {
-                    Console.WriteLine("Access role: {0}", events.AccessRole);
-                    Console.WriteLine("Description: {0}", events.Description);
-                    Console.WriteLine("ETage: {0}", events.ETag);
-                    Console.WriteLine("Kind: {0}", events.Kind);
-                    Console.WriteLine("Summary: {0}", events.Summary);
-                    Console.WriteLine("Updated: {0}", events.Updated);
-                    Console.WriteLine("Upcoming events:");
+                    //Console.WriteLine("Access role: {0}", events.AccessRole);
+                    //Console.WriteLine("Description: {0}", events.Description);
+                    //Console.WriteLine("ETage: {0}", events.ETag);
+                    //Console.WriteLine("Kind: {0}", events.Kind);
+                    //Console.WriteLine("Updated: {0}", events.Updated);
+                    //Console.WriteLine("Upcoming events:");
 
                     foreach (var eventItem in events.Items)
                     {
@@ -90,17 +105,32 @@ namespace CalendarQuickstart
                         {
                             when = eventItem.Start.Date;
                         }
-                        Console.WriteLine("{0} ({1})", eventItem.Summary, when);
+
+
+                        string thing = $"{events.Summary} - {eventItem.Summary} - {when}";
+                        familyEvents.Add(thing);
+
+                        //Console.WriteLine("{0} ({1})", eventItem.Summary, when);
                     }
                 }
                 else
                 {
-                    Console.WriteLine("No upcoming events found.");
+                    //Console.WriteLine("No upcoming events found.");
                 }
-                Console.WriteLine("----------------------------");
+                //Console.WriteLine("----------------------------");
+            }
+            foreach(var t in familyEvents)
+            {
+                Console.WriteLine(t);
             }
             Console.Read();
 
         }
+    }
+    public class calItem
+    {
+        public string CalName { get; set; }
+        public string EvtName { get; set; }
+        public DateTime EvtDate { get; set; }
     }
 }
