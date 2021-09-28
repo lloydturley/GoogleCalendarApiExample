@@ -98,25 +98,37 @@ namespace CalendarQuickstart
                     //Console.WriteLine("Updated: {0}", events.Updated);
                     //Console.WriteLine("Upcoming events:");
 
+                    bool allDay = false;
+
                     foreach (var eventItem in events.Items)
                     {
                         DateTime when;
                         if (eventItem.Start.DateTime==null)
                         {
                             when = DateTime.Parse(eventItem.Start.Date);
+                            allDay = true;
                         } else
                         {
                             when = (DateTime)eventItem.Start.DateTime;
+                            allDay = false;
                         }
 
                         calItem fe = new calItem
                         {
                             CalName = events.Summary,
                             EvtDate = when,
-                            EvtName = eventItem.Summary
+                            EvtName = eventItem.Summary,
+                            AllDay = allDay
                         };
 
-                        string thing = $"{events.Summary} - {eventItem.Summary} - {when}";
+                        if (allDay == true)
+                        {
+                            string thing = $"All Day - {events.Summary} - {eventItem.Summary} - {when}";
+                        } else
+                        {
+                            string thing = $"{events.Summary} - {eventItem.Summary} - {when}";
+                        }
+                        
                         familyEvents.Add(fe);
 
                         //Console.WriteLine("{0} ({1})", eventItem.Summary, when);
@@ -141,5 +153,7 @@ namespace CalendarQuickstart
         public string CalName { get; set; }
         public string EvtName { get; set; }
         public DateTime EvtDate { get; set; }
+
+        public bool AllDay { get; set; }
     }
 }
