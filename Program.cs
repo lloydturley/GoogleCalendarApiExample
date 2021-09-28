@@ -100,15 +100,24 @@ namespace CalendarQuickstart
 
                     foreach (var eventItem in events.Items)
                     {
-                        string when = eventItem.Start.DateTime.ToString();
-                        if (String.IsNullOrEmpty(when))
+                        DateTime when;
+                        if (eventItem.Start.DateTime==null)
                         {
-                            when = eventItem.Start.Date;
+                            when = DateTime.Parse(eventItem.Start.Date);
+                        } else
+                        {
+                            when = (DateTime)eventItem.Start.DateTime;
                         }
 
+                        calItem fe = new calItem
+                        {
+                            CalName = events.Summary,
+                            EvtDate = when,
+                            EvtName = eventItem.Summary
+                        };
 
                         string thing = $"{events.Summary} - {eventItem.Summary} - {when}";
-                        familyEvents.Add(thing);
+                        familyEvents.Add(fe);
 
                         //Console.WriteLine("{0} ({1})", eventItem.Summary, when);
                     }
@@ -119,9 +128,9 @@ namespace CalendarQuickstart
                 }
                 //Console.WriteLine("----------------------------");
             }
-            foreach(var t in familyEvents)
+            foreach (var t in familyEvents.OrderBy(p => p.EvtDate))
             {
-                Console.WriteLine(t);
+                Console.WriteLine($"{t.EvtDate} - {t.CalName} - {t.EvtName}");
             }
             Console.Read();
 
